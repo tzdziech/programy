@@ -1,78 +1,55 @@
+from pip import main
+from tkinter import *
+import FileList as fl
+from tkinter import ttk
 import glob
-import os
-import datetime
-from pickle import FALSE
-import numpy as np
+import tomli
 
-#zwraca numer pozycji najwiekszego pliku z listy o zadanym rozszezeniu
-def find_biggest(list, extension):
-    last_biggest = list[2,0]
-    number_biggest = FALSE
-    for x in range(len(list[0])):
-        if list[2,x] > last_biggest and list[3,x] == extension:
-            last_biggest = list[2,x]
-            number_biggest = x
 
-    print("Najwiekszy plik to:", list[0,number_biggest], list[1,number_biggest])
-    return number_biggest
+if __name__ == '__main__':
+    main_list = fl.FileList("") #jesli folder sieciowy to podwoje backslashe \\\\Desktop-sj7tn1k\\wii\\
+    #print(main_list.list)
+    #main_list.do_ls()
+    #main_list.find_biggest(".py")
+    #main_list.find_newest(".py")
 
-#zwraca numer pozycji najnowszego pliku z listy o zadanym rozszezeniu
-def find_newest(list, extension):
-    last_newest = list[4,0]
-    number_newest = FALSE
-    for x in range(len(list[0])):
-        if list[4,x] > last_newest and list[3,x] == extension:
-            last_newest = list[4,x]
-            number_newest = x
+    mainWindow = Tk()
 
-    print("Najnowszy plik to:", list[0,number_newest], list[1,number_newest])
-    return number_newest
+    def StartButton():
+        temp_file = fileListComboBOx.get() #pobiera z widgetu wybrana wartosc
+        
+        #wgranie pliku .toml
+        fp = open(temp_file, mode="rb")
+        toml = tomli.load(fp)
+        print(toml)
 
-#konwersja rozmiaru na jak najwieksze jednostki
-def convert_bytes(size):
-    """ Convert bytes to KB, or MB or GB"""
-    size = float(size)
-    for x in ['bytes', 'KB', 'MB', 'GB', 'TB']:
-        if size < 1024.0:
-            return "%3.2f %s" % (size, x)
-        size /= 1024.0
+        mainText.insert(END, toml ) #wypluwa do pola tekstowego
 
-#print calej listy
-def do_ls(list):
+
+    #inicjacja glownego okna
+    mainWindow.geometry("420x420")
+    mainWindow.title("Backup Checker - by Tomasz") 
+    mainWindow.config(background="GREY") 
+    icon = PhotoImage(file='icon.png')
+    mainWindow.iconphoto(True, icon) 
+
+    #elementy okna definicje
+    fileListComboBOx = ttk.Combobox(mainWindow, values = glob.glob("config\*.*"))    
+    fileListComboBOx.set("Wybierz")
+    startButton = Button(mainWindow, text="Start", command = StartButton)
+    mainText = Text(mainWindow, height = 300, width = 300)
+
+    #elemty okna inicjacja
+    fileListComboBOx.pack()
+    startButton.pack()
+    mainText.pack()
+
     
-    for x in range(len(list[0])):
-        print("File name:", list[0,x],"\t size:", list[1,x],"(", list[2,x], ") \textension:", list[3,x], "\t last modified:", list[4,x], "(", datetime.datetime.fromtimestamp(float(list[4,x])), ")")
-    print("Znaleziono:", len(list[0]), "pliki")
 
-#wyodrebnienie rozszezenia z nazwy pliku
-def get_extension(file):
-    file_details = os.path.splitext(file)
-    return file_details[1]
+    #text_field.insert(END, main_list.find_biggest(".py") )
+    #text_field.insert(END, main_list.find_newest(".py") )
 
-#pobranie danych do stworzenia list
-path = ""
-size = [] #lista z rozmiarami
-natural_size = []
-file_extension = [] #lista z rozszezeniami
-file_modification_time = []
-files = glob.glob(path+"*.*")
-for file in files:    
-    size.append(convert_bytes(os.path.getsize(file)))#pobiera rozmiar i conwertuje na najwieksze jednostki
-    natural_size.append(os.path.getsize(file))
-    file_extension.append(get_extension(file))    
-    file_modification_time.append(os.path.getmtime(file))
+   
 
-#stworzenie tablicy z list
-#zadana list plikow:  0 - nazwa, 1- rozmiar zmienony, 2 - rozmiar naturalny, 3 - rozszezenie, 4 - czas) 
-ls = np.array([files, size, natural_size, file_extension, file_modification_time])
-
-#pierwsza wartos to kolumna, druga to wierszczyli: 0,0 - nazwa, 1,0 - rozmiar
-print(ls[1,0])
-
-do_ls(ls)
-
-find_biggest(ls,".py")
-find_newest(ls,".py")
-
-
-
+    mainWindow.mainloop()
+  
