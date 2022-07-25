@@ -1,0 +1,5 @@
+company = "MOREX"
+pathtype = "network"
+path = "\\\\192.168.0.247\\SQLBackup\\"
+veeam = "no"
+sql = "yes"

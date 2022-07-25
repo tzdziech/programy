@@ -17,6 +17,11 @@ def get_extension(file):
     file_details = path.splitext(file)
     return file_details[1]
 
+def path_to_filename(path: str):
+    #print("path_to_filename", path[path.rindex("\\")+1:] )
+    return path[path.rindex("\\")+1:]
+
+
 class FileList:
     """Lista plikow w katalogu wraz rozszezeniem, rozmiarem i czasem modyfikacji"""
 
@@ -47,41 +52,48 @@ class FileList:
     #zwraca numer pozycji najwiekszego pliku z listy o zadanym rozszezeniu
     def find_biggest(self, extension):
         if len(self.list[0]) == 0:
-            print("Brak plikow w katalogu - nie mozna znalezc najwiekszego")
+            #   print("Brak plikow w katalogu - nie mozna znalezc najwiekszego")
             return False
 
         last_biggest = self.list[2,0]
-        number_biggest = 0        
+        number_biggest = False        
         for x in range(len(self.list[0])):
             if self.list[2,x] > last_biggest and self.list[3,x] == extension:
                 last_biggest = self.list[2,x]
                 number_biggest = x
 
-        print("Najwiekszy plik to:", self.list[0,number_biggest], self.list[1,number_biggest])
-        return "Najwiekszy plik to:", self.list[0,number_biggest], self.list[1,number_biggest]
+        #   print("Najwiekszy plik to:", self.list[0,number_biggest], self.list[1,number_biggest])
+        #   return "Najwiekszy plik to:", self.list[0,number_biggest], self.list[1,number_biggest]
+        if number_biggest: return path_to_filename(self.list[0,number_biggest])
+        else: return False
 
     #zwraca numer pozycji najnowszego pliku z listy o zadanym rozszezeniu
     def find_newest(self, extension):
         if len(self.list[0]) == 0:
-            print("Brak plikow w katalogu - nie mozna znalezc najnowszego")
+            #   print("Brak plikow w katalogu - nie mozna znalezc najnowszego")
             return False
 
         last_newest = self.list[4,0]
-        number_newest = 0        
+        number_newest = False        
         for x in range(len(self.list[0])):
             if self.list[4,x] > last_newest and self.list[3,x] == extension:
                 last_newest = self.list[4,x]
                 number_newest = x
 
-        print("Najnowszy plik to:", self.list[0,number_newest], self.list[1,number_newest])
-        return "Najnowszy plik to:", self.list[0,number_newest], self.list[1,number_newest]
+        #   print("Najnowszy plik to:", self.list[0,number_newest], self.list[1,number_newest])
+        #   return "Najnowszy plik to:", self.list[0,number_newest], self.list[1,number_newest]
+        if number_newest: return {'size': self.list[1,number_newest],'file': path_to_filename(self.list[0,number_newest]),'date': self.list[4,number_newest]}
+        else: return False
+        #   return self.list[0,number_newest]
+        
 
     
 
 if __name__ == '__main__':
-    list = FileList("")
+    list = FileList("C:\\Users\\Agron\\Documents\\NAUKA\\PYTHON\\programy\\Backup_Checker\\")
     #print(list.list)
     list.do_ls()
     list.find_biggest(".py")
     list.find_newest(".py")
+
     #help(FileList)
