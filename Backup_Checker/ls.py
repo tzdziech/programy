@@ -62,7 +62,7 @@ if __name__ == '__main__':
     def get_free_space_string(path: str):
         total, used, free = shutil.disk_usage(path)
         for x in ['bytes', 'KB', 'MB', 'GB', 'TB']:
-            if free < 1024.0:
+            if total < 1024.0:
                 break
             free /= 1024.0
             total /= 1024.0
@@ -131,7 +131,7 @@ if __name__ == '__main__':
         if toml['sql'] == "yes":
             print("Szukamy backupow SQL")
             print("Klient", toml['company'])
-            print("Data	Wykonujący 	Status	Oryginalny rozmiar maszyny [TB]	Data ostatniego pełnego backupu 	Rozmiar backupu [GB]	Data ostatniego wykonanego backupu	Wolne miejsce w repozytorium [GB]	Uwagi")
+            print("Data	Wykonujący kontrolę	Status	Rozmiar pliku BAK	Data ostatniego backupu 	Wolne miejsce w repozytorium 	Uwagi")
             dirList = get_directories(toml["path"])
             for i in dirList:
                 sub_folder_execute(i, "SQL")
